@@ -1,4 +1,4 @@
-# Classification-of-Image-Data-with-MLP-and-CNN
+# Classification of Image Data with MLP and CNN
 
 This project implements both a multilayer perceptron and a convolutional neural network in Python; 
 the perceptron comprises an input layer, one or more hidden layers, and an output layer, 
