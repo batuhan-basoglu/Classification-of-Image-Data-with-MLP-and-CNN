@@ -119,23 +119,23 @@ class MLP:
 
     def plot_graph(self, train_losses, val_accuracies):
         if not os.path.exists('results'):
-            os.makedirs('results')
+            os.makedirs('results') # creates results director
 
-        fig, ax1 = plt.subplots()
+        fig, ax1 = plt.subplots() # initializes the plot
 
         ax1.set_xlabel('Epochs')
         ax1.set_ylabel('Training Loss', color='tab:blue')
         ax1.plot(range(1, len(train_losses) + 1), train_losses, color='tab:blue', label='Training Loss')
-        ax1.tick_params(axis='y', labelcolor='tab:blue')
+        ax1.tick_params(axis='y', labelcolor='tab:blue') # defines loss subplot
 
         ax2 = ax1.twinx()
         ax2.set_ylabel('Validation Accuracy', color='tab:orange')
         ax2.plot(range(1, len(val_accuracies) + 1), val_accuracies, color='tab:orange', label='Validation Accuracy')
-        ax2.tick_params(axis='y', labelcolor='tab:orange')
+        ax2.tick_params(axis='y', labelcolor='tab:orange') # defines accuracy subplot
 
         plt.title('Training Loss and Validation Accuracy over Epochs')
 
-        result_path = 'results/MLP-output.png'
+        result_path = 'results/MLP-output.png' # defines the file name
         fig.savefig(result_path)
         print(f"Graph saved to: {result_path}")
 
