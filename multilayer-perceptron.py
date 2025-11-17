@@ -154,11 +154,11 @@ y_train = train_set.targets.numpy()
 x_test = test_set.data.numpy().reshape(-1, 28 * 28).astype(np.float32) / 255.0
 y_test = test_set.targets.numpy()
 
-# MLP Initialization
+# MLP initialization
 mlp = MLP(
     input_size=28 * 28,
-    hidden_size1=128,
-    hidden_size2=64,
+    hidden_size1=256,
+    hidden_size2=256,
     output_size=10,
     weight_scale=1e-2
 )
@@ -171,7 +171,7 @@ mlp.fit(
     y_val=y_test,
     lr=1e-2,
     epochs=10,
-    batch_size=128
+    batch_size=256
 )
 
 # tests the model
