@@ -3,11 +3,9 @@ import matplotlib.pyplot as plt
 from torchvision import datasets
 import os
 
-
-class MLP:
-    def __init__(self, input_size, hidden_size1, hidden_size2, output_size, weight_scale, l1, l2):
-        self.l1 = l1
-        self.l2 = l2
+class MLP_leaky_tanh:
+    def __init__(self, input_size, hidden_size1, hidden_size2, output_size, weight_scale, activation_type):
+        self.activation_type = activation_type
 
         # initializes weights and biases for each layer
         self.W1 = np.random.randn(input_size, hidden_size1) * weight_scale
@@ -17,18 +15,18 @@ class MLP:
         self.W3 = np.random.randn(hidden_size2, output_size) * weight_scale
         self.b3 = np.zeros((1, output_size))
 
-    def forward(self, x):
+    def forward(self, x, alpha=0):
         # forwards pass through the network
         self.x = x  # input for backpropagation
         self.z1 = x @ self.W1 + self.b1  # linear transformation for layer 1
-        self.a1 = self.relu(self.z1)  # ReLU activation
+        self.a1 = self.activation(self.z1, alpha)  # ReLU activation
         self.z2 = self.a1 @ self.W2 + self.b2  # linear transformation for layer 2
-        self.a2 = self.relu(self.z2)  # ReLU activation
+        self.a2 = self.activation(self.z2, alpha)  # ReLU activation
         self.z3 = self.a2 @ self.W3 + self.b3  # linear transformation for layer 3
         self.a3 = self.softmax(self.z3)  # applies softmax to get class probabilities
         return self.a3  # output of the network
 
-    def backward(self, y, lr):
+    def backward(self, y, lr, alpha=0):
         # backwards pass for weight updates using gradient descent
         m = y.shape[0]
         y_one_hot = self.one_hot_encode(y, self.W3.shape[1]) # converts labels to one-hot encoding
@@ -38,26 +36,13 @@ class MLP:
         dw3 = (self.a2.T @ dz3) / m
         db3 = np.sum(dz3, axis=0, keepdims=True) / m
 
-        dz2 = (dz3 @ self.W3.T) * self.relu_deriv(self.z2)  # gradient for layer 2
+        dz2 = (dz3 @ self.W3.T) * self.activation_deriv(self.z2, alpha)  # gradient for layer 2
         dw2 = (self.a1.T @ dz2) / m
         db2 = np.sum(dz2, axis=0, keepdims=True) / m
 
-        dz1 = (dz2 @ self.W2.T) * self.relu_deriv(self.z1)  # gradient for layer 1
+        dz1 = (dz2 @ self.W2.T) * self.activation_deriv(self.z1, alpha)  # gradient for layer 1
         dw1 = (self.x.T @ dz1) / m
         db1 = np.sum(dz1, axis=0, keepdims=True) / m
-
-
-
-        dw3 += self.l2 * self.W3
-        dw2 += self.l2 * self.W2
-        dw1 += self.l2 * self.W1
-
-
-        dw3 += self.l1 * np.sign(self.W3)
-
-        dw2 += self.l1 * np.sign(self.W2)
-
-        dw1 += self.l1 * np.sign(self.W1)
 
         # updates weights and biases using gradient descent
         self.W3 -= lr * dw3
@@ -67,15 +52,43 @@ class MLP:
         self.W1 -= lr * dw1
         self.b1 -= lr * db1
 
-    @staticmethod
-    def relu(x):
-        # ReLU activation
-        return np.maximum(0, x)
+    def activation(self, x, alpha=0):
+        # chooses activation function based on `activation_type`
+        if self.activation_type == 'leaky-relu':
+            return self.Lrelu(x, alpha)
+        elif self.activation_type == 'tanh':
+            return self.tanh(x)
+        else:
+            raise ValueError("Invalid activation type")
+
+    def activation_deriv(self, x, alpha):
+        # derivatives for the chosen activation function
+        if self.activation_type == 'leaky-relu':
+            return self.Lrelu_deriv(x, alpha)
+        elif self.activation_type == 'tanh':
+            return self.tanh_deriv(x)
+        else:
+            raise ValueError("Invalid activation type")
 
     @staticmethod
-    def relu_deriv(x):
-        # derivation of ReLU activation for backpropagation
-        return (x > 0).astype(float)
+    def Lrelu(x, alpha=0):
+        # leaky ReLU activation
+        return np.where(x > 0, x, alpha * x)
+
+    @staticmethod
+    def Lrelu_deriv(x, alpha=0):
+        # derivation of leaky ReLU activation for backpropagation
+        return np.where(x > 0, 1, alpha)
+
+    @staticmethod
+    def tanh(x):
+        # tanh formula
+        return (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+
+    @staticmethod
+    def tanh_deriv(x):
+        # derivation of tanh for backpropagation
+        return 1 - ((np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))) ** 2
 
     @staticmethod
     def softmax(x):
@@ -98,7 +111,7 @@ class MLP:
         log_probs = -np.log(y_hat_clipped[np.arange(m), y])
         return np.mean(log_probs)
 
-    def fit(self, x_train, y_train, x_val, y_val, lr, epochs, batch_size):
+    def fit(self, x_train, y_train, x_val, y_val, lr, epochs, batch_size, activation_type, alpha=0):
         train_losses = []
         val_accuracies = []
 
@@ -116,24 +129,24 @@ class MLP:
                 y_batch = y_train_shuffled[start:end] # batch of labels
 
                 # Forward pass, backward pass, and weight update
-                self.forward(x_batch)
-                self.backward(y_batch, lr)
+                self.forward(x_batch, alpha)
+                self.backward(y_batch, lr, alpha)
 
                 epoch_loss += self.cross_entropy_loss(y_batch, self.a3) # updating the epoch loss
 
             epoch_loss /= num_batches # average loss is defined
             train_losses.append(epoch_loss)
 
-            val_pred = self.predict(x_val)
+            val_pred = self.predict(x_val, alpha)
             val_acc = np.mean(val_pred == y_val)
             val_accuracies.append(val_acc) \
 
             print(f"Epoch {epoch:02d} | Training Loss: {epoch_loss:.4f} | Value Accuracy: {val_acc:.4f}")
 
-        self.plot_graph(train_losses, val_accuracies)
+        self.plot_graph(train_losses, val_accuracies, activation_type)
         return val_accuracies[-1]
 
-    def plot_graph(self, train_losses, val_accuracies):
+    def plot_graph(self, train_losses, val_accuracies, activation_type):
         if not os.path.exists('results'):
             os.makedirs('results') # creates results director
 
@@ -151,48 +164,77 @@ class MLP:
 
         plt.title('Training Loss and Validation Accuracy over Epochs')
 
-        result_path = 'results/experiment-4.png' # defines the file name
+        result_path = 'results/experiment-2-' + activation_type + '.png' # defines the file name
         fig.savefig(result_path)
         print(f"Graph saved to: {result_path}")
 
-    def predict(self, x): # predicts class labels for the input data
-        probs = self.forward(x)  # forwards pass to get probabilities
+    def predict(self, x, alpha=0): # predicts class labels for the input data
+        probs = self.forward(x, alpha)  # forwards pass to get probabilities
         return np.argmax(probs, axis=1)  # returns the class with highest probability
 
 # acquiring the FashionMNIST dataset
 train_set = datasets.FashionMNIST(root='.', train=True, download=True)
 test_set = datasets.FashionMNIST(root='.', train=False, download=True)
 
-# preprocessing the data by flattening images without normalizing them.
-x_train = train_set.data.numpy().reshape(-1, 28 * 28).astype(np.float32)
+# preprocessing the data by flattening images and normalizing them.
+x_train = train_set.data.numpy().reshape(-1, 28 * 28).astype(np.float32) / 255.0
 y_train = train_set.targets.numpy()
 
-x_test = test_set.data.numpy().reshape(-1, 28 * 28).astype(np.float32)
+x_test = test_set.data.numpy().reshape(-1, 28 * 28).astype(np.float32) / 255.0
 y_test = test_set.targets.numpy()
 
-# MLP Initialization
-mlp = MLP(
+# MLP initialization (tanh instead of ReLu)
+mlp_tanh = MLP_leaky_tanh(
     input_size=28 * 28,
     hidden_size1=256,
     hidden_size2=256,
     output_size=10,
     weight_scale=1e-2,
-    l1 = 1e-6,
-    l2 = 1e-4
+    activation_type='tanh'
 )
 
 # trains the model
-mlp.fit(
+mlp_tanh.fit(
     x_train=x_train,
     y_train=y_train,
     x_val=x_test,
     y_val=y_test,
     lr=1e-2,
     epochs=10,
-    batch_size=256
+    batch_size=256,
+    activation_type='tanh'
 )
 
 # tests the model
-test_pred = mlp.predict(x_test)
-test_acc = np.mean(test_pred == y_test)
-print(f"\nFinal test accuracy: {test_acc:.4f}")
+test_pred_tanh = mlp_tanh.predict(x_test)
+test_acc_tanh = np.mean(test_pred_tanh == y_test)
+print(f"\nFinal test accuracy: {test_acc_tanh:.4f}")
+
+# MLP initialization (leaky ReLu instead of ReLu)
+mlp_Lrelu = MLP_leaky_tanh(
+    input_size=28 * 28,
+    hidden_size1=256,
+    hidden_size2=256,
+    output_size=10,
+    weight_scale=1e-2,
+    activation_type='leaky-relu'
+)
+alpha = 0.01
+
+# trains the model
+mlp_Lrelu.fit(
+    x_train=x_train,
+    y_train=y_train,
+    x_val=x_test,
+    y_val=y_test,
+    lr=1e-2,
+    epochs=10,
+    batch_size=256,
+    activation_type='leaky-relu',
+    alpha=alpha
+)
+
+# tests the model
+test_pred_Lrelu = mlp_Lrelu.predict(x_test, alpha)
+test_acc_Lrelu = np.mean(test_pred_Lrelu == y_test)
+print(f"\nFinal test accuracy: {test_acc_Lrelu:.4f}")

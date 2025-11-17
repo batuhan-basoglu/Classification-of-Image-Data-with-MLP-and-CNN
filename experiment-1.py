@@ -22,43 +22,43 @@ class MLP:
         self.b3 = np.zeros((1, output_size))
 
     def forward(self, x):
-        # Forward pass through the network
+        # forwards pass through the network
         self.x = x  # input for backpropagation
-        self.z1 = x @ self.W1 + self.b1  # Linear transformation for first layer
+        self.z1 = x @ self.W1 + self.b1  # linear transformation for layer 1
         self.a1 = self.relu(self.z1)  # ReLU activation
 
         if self.has_hidden_layer2:
-            self.z2 = self.a1 @ self.W2 + self.b2  # Linear transformation for second layer
+            self.z2 = self.a1 @ self.W2 + self.b2  # linear transformation for layer 2
             self.a2 = self.relu(self.z2)  # ReLU activation
             self.z3 = self.a2 @ self.W3 + self.b3  # Linear transformation for output layer
         else:
             self.z3 = self.a1 @ self.W3 + self.b3  # No second layer, directly to output
 
-        self.a3 = self.softmax(self.z3)  # Softmax to get class probabilities
+        self.a3 = self.softmax(self.z3)  # applies softmax to get class probabilities
         return self.a3
 
     def backward(self, y, lr):
-        # Backward pass for weight updates using gradient descent
+        # backwards pass for weight updates using gradient descent
         m = y.shape[0]
-        y_one_hot = self.one_hot_encode(y, self.W3.shape[1])  # Converts labels to one-hot encoding
+        y_one_hot = self.one_hot_encode(y, self.W3.shape[1])  # converts labels to one-hot encoding
 
-        # Gradient for output layer
-        dz3 = self.a3 - y_one_hot
+        # computes gradients for each layer
+        dz3 = self.a3 - y_one_hot # gradient for output layer
         dw3 = (self.a2.T if self.has_hidden_layer2 else self.a1.T) @ dz3 / m
         db3 = np.sum(dz3, axis=0, keepdims=True) / m
 
         if self.has_hidden_layer2:
-            dz2 = (dz3 @ self.W3.T) * self.relu_deriv(self.z2)  # Gradient for second hidden layer
+            dz2 = (dz3 @ self.W3.T) * self.relu_deriv(self.z2)  # gradient for second hidden layer
             dw2 = (self.a1.T @ dz2) / m
             db2 = np.sum(dz2, axis=0, keepdims=True) / m
-            dz1 = (dz2 @ self.W2.T) * self.relu_deriv(self.z1)  # Gradient for first hidden layer
+            dz1 = (dz2 @ self.W2.T) * self.relu_deriv(self.z1)  # gradient for one hidden layer
         else:
-            dz1 = (dz3 @ self.W3.T) * self.relu_deriv(self.z1)  # No second hidden layer
+            dz1 = (dz3 @ self.W3.T) * self.relu_deriv(self.z1)  # no second hidden layer
 
         dw1 = (self.x.T @ dz1) / m
         db1 = np.sum(dz1, axis=0, keepdims=True) / m
 
-        # Update weights and biases using gradient descent
+        # updates weights and biases using gradient descent
         self.W3 -= lr * dw3
         self.b3 -= lr * db3
         if self.has_hidden_layer2:
