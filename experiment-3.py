@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 from torchvision import datasets
 import os
 
-
 class MLP:
-    def __init__(self, input_size, hidden_size1, hidden_size2, output_size, weight_scale, l2):
+    def __init__(self, input_size, hidden_size1, hidden_size2, output_size, weight_scale, l1=0, l2=0):
+        self.l1 = l1
         self.l2 = l2
 
         # initializes weights and biases for each layer
@@ -45,9 +45,16 @@ class MLP:
         dw1 = (self.x.T @ dz1) / m
         db1 = np.sum(dz1, axis=0, keepdims=True) / m
 
-        dw3 += self.l2 * self.W3
-        dw2 += self.l2 * self.W2
-        dw1 += self.l2 * self.W1
+        # applying L1 and L2 regularization
+        if self.l1 > 0:
+            dw3 += self.l1 * np.sign(self.W3)
+            dw2 += self.l1 * np.sign(self.W2)
+            dw1 += self.l1 * np.sign(self.W1)
+
+        if self.l2 > 0:
+            dw3 += self.l2 * self.W3
+            dw2 += self.l2 * self.W2
+            dw1 += self.l2 * self.W1
 
         # updates weights and biases using gradient descent
         self.W3 -= lr * dw3
@@ -141,7 +148,14 @@ class MLP:
 
         plt.title('Training Loss and Validation Accuracy over Epochs')
 
-        result_path = 'results/experiment-3-l2.png' # defines the file name
+        # dynamically sets the filename
+        if self.l1 > 0 and self.l2 > 0:
+            result_path = 'results/experiment-3-l1-and-l2.png'
+        elif self.l1 > 0:
+            result_path = 'results/experiment-3-l1.png'
+        elif self.l2 > 0:
+            result_path = 'results/experiment-3-l2.png'
+
         fig.savefig(result_path)
         print(f"Graph saved to: {result_path}")
 
@@ -160,18 +174,18 @@ y_train = train_set.targets.numpy()
 x_test = test_set.data.numpy().reshape(-1, 28 * 28).astype(np.float32) / 255.0
 y_test = test_set.targets.numpy()
 
-# MLP Initialization
-mlp = MLP(
+# MLP initialization (L1 regularization)
+mlp_l1 = MLP(
     input_size=28 * 28,
     hidden_size1=256,
     hidden_size2=256,
     output_size=10,
     weight_scale=1e-2,
-    l2 = 1e-4
+    l1 = 1e-6
 )
 
 # trains the model
-mlp.fit(
+mlp_l1.fit(
     x_train=x_train,
     y_train=y_train,
     x_val=x_test,
@@ -182,6 +196,59 @@ mlp.fit(
 )
 
 # tests the model
-test_pred = mlp.predict(x_test)
-test_acc = np.mean(test_pred == y_test)
-print(f"\nFinal test accuracy: {test_acc:.4f}")
+test_pred_l1 = mlp_l1.predict(x_test)
+test_acc_l1 = np.mean(test_pred_l1 == y_test)
+print(f"\nFinal test accuracy: {test_acc_l1:.4f}")
+
+# MLP initialization (L2 regularization)
+mlp_l2 = MLP(
+    input_size=28 * 28,
+    hidden_size1=256,
+    hidden_size2=256,
+    output_size=10,
+    weight_scale=1e-2,
+    l2 = 1e-4
+)
+
+# trains the model
+mlp_l2.fit(
+    x_train=x_train,
+    y_train=y_train,
+    x_val=x_test,
+    y_val=y_test,
+    lr=1e-2,
+    epochs=10,
+    batch_size=256
+)
+
+# tests the model
+test_pred_l2 = mlp_l2.predict(x_test)
+test_acc_l2 = np.mean(test_pred_l2 == y_test)
+print(f"\nFinal test accuracy: {test_acc_l2:.4f}")
+
+# MLP initialization (L1 and L2 regularization)
+mlp_l1_l2 = MLP(
+    input_size=28 * 28,
+    hidden_size1=256,
+    hidden_size2=256,
+    output_size=10,
+    weight_scale=1e-2,
+    l1 = 1e-6,
+    l2 = 1e-4
+)
+
+# trains the model
+mlp_l1_l2.fit(
+    x_train=x_train,
+    y_train=y_train,
+    x_val=x_test,
+    y_val=y_test,
+    lr=1e-2,
+    epochs=10,
+    batch_size=256
+)
+
+# tests the model
+test_pred_l1_l2 = mlp_l1_l2.predict(x_test)
+test_acc_l1_l2 = np.mean(test_pred_l1_l2 == y_test)
+print(f"\nFinal test accuracy: {test_acc_l1_l2:.4f}")

@@ -1,17 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from torchvision import datasets
-from torchvision import transforms
+from torchvision import datasets, transforms
 import os
 
-
-
 class MLP:
-    def __init__(self, input_size, hidden_size1, hidden_size2, output_size, weight_scale, l1, l2):
-
+    def __init__(self, input_size, hidden_size1, hidden_size2, output_size, weight_scale, l1=0, l2=0):
         self.l1 = l1
         self.l2 = l2
-
 
         # initializes weights and biases for each layer
         self.W1 = np.random.randn(input_size, hidden_size1) * weight_scale
@@ -50,18 +45,16 @@ class MLP:
         dw1 = (self.x.T @ dz1) / m
         db1 = np.sum(dz1, axis=0, keepdims=True) / m
 
+        # applying L1 and L2 regularization
+        if self.l1 > 0:
+            dw3 += self.l1 * np.sign(self.W3)
+            dw2 += self.l1 * np.sign(self.W2)
+            dw1 += self.l1 * np.sign(self.W1)
 
-
-        dw3 += self.l2 * self.W3
-        dw2 += self.l2 * self.W2
-        dw1 += self.l2 * self.W1
-
-
-        dw3 += self.l1 * np.sign(self.W3)
-
-        dw2 += self.l1 * np.sign(self.W2)
-
-        dw1 += self.l1 * np.sign(self.W1)
+        if self.l2 > 0:
+            dw3 += self.l2 * self.W3
+            dw2 += self.l2 * self.W2
+            dw1 += self.l2 * self.W1
 
         # updates weights and biases using gradient descent
         self.W3 -= lr * dw3
@@ -155,7 +148,14 @@ class MLP:
 
         plt.title('Training Loss and Validation Accuracy over Epochs')
 
-        result_path = 'results/experiment-5.png' # defines the file name
+        # dynamically sets the filename
+        if self.l1 > 0 and self.l2 > 0:
+            result_path = 'results/experiment-5-l1-and-l2.png'
+        elif self.l1 > 0:
+            result_path = 'results/experiment-5-l1.png'
+        elif self.l2 > 0:
+            result_path = 'results/experiment-5-l2.png'
+
         fig.savefig(result_path)
         print(f"Graph saved to: {result_path}")
 
@@ -163,31 +163,41 @@ class MLP:
         probs = self.forward(x)  # forwards pass to get probabilities
         return np.argmax(probs, axis=1)  # returns the class with highest probability
 
+# defining the data augmentation transformations for the training set
+transform_train = transforms.Compose([
+    transforms.RandomRotation(20),  # random rotations between -20 and 20 degrees
+    transforms.RandomHorizontalFlip(),  # random horizontal flip
+    transforms.ToTensor(),  # converting images to tensor and normalizing to [0, 1]
+])
+
+# no augmentation for the test set, just converting to tensor
+transform_test = transforms.Compose([
+    transforms.ToTensor(),
+])
+
 # acquiring the FashionMNIST dataset
-transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
-train_set = datasets.FashionMNIST(root='.', train=True, download=True, transform = transform)
-test_set = datasets.FashionMNIST(root='.', train=False, download=True, transform = transform)
+train_set = datasets.FashionMNIST(root='.', train=True, download=True, transform=transform_train)
+test_set = datasets.FashionMNIST(root='.', train=False, download=True, transform=transform_test)
 
 # preprocessing the data by flattening images and normalizing them.
-x_train = train_set.data.numpy().reshape(-1, 28 * 28).astype(np.float32)
+x_train = train_set.data.numpy().reshape(-1, 28 * 28).astype(np.float32) / 255.0
 y_train = train_set.targets.numpy()
 
-x_test = test_set.data.numpy().reshape(-1, 28 * 28).astype(np.float32)
+x_test = test_set.data.numpy().reshape(-1, 28 * 28).astype(np.float32) / 255.0
 y_test = test_set.targets.numpy()
 
-# MLP Initialization
-mlp = MLP(
+# MLP initialization (L1 regularization)
+mlp_l1 = MLP(
     input_size=28 * 28,
     hidden_size1=256,
     hidden_size2=256,
     output_size=10,
     weight_scale=1e-2,
-    l1 = 1e-6,
-    l2 = 1e-4
+    l1 = 1e-6
 )
 
 # trains the model
-mlp.fit(
+mlp_l1.fit(
     x_train=x_train,
     y_train=y_train,
     x_val=x_test,
@@ -198,6 +208,59 @@ mlp.fit(
 )
 
 # tests the model
-test_pred = mlp.predict(x_test)
-test_acc = np.mean(test_pred == y_test)
-print(f"\nFinal test accuracy: {test_acc:.4f}")
+test_pred_l1 = mlp_l1.predict(x_test)
+test_acc_l1 = np.mean(test_pred_l1 == y_test)
+print(f"\nFinal test accuracy: {test_acc_l1:.4f}")
+
+# MLP initialization (L2 regularization)
+mlp_l2 = MLP(
+    input_size=28 * 28,
+    hidden_size1=256,
+    hidden_size2=256,
+    output_size=10,
+    weight_scale=1e-2,
+    l2 = 1e-4
+)
+
+# trains the model
+mlp_l2.fit(
+    x_train=x_train,
+    y_train=y_train,
+    x_val=x_test,
+    y_val=y_test,
+    lr=1e-2,
+    epochs=10,
+    batch_size=256
+)
+
+# tests the model
+test_pred_l2 = mlp_l2.predict(x_test)
+test_acc_l2 = np.mean(test_pred_l2 == y_test)
+print(f"\nFinal test accuracy: {test_acc_l2:.4f}")
+
+# MLP initialization (L1 and L2 regularization)
+mlp_l1_l2 = MLP(
+    input_size=28 * 28,
+    hidden_size1=256,
+    hidden_size2=256,
+    output_size=10,
+    weight_scale=1e-2,
+    l1 = 1e-6,
+    l2 = 1e-4
+)
+
+# trains the model
+mlp_l1_l2.fit(
+    x_train=x_train,
+    y_train=y_train,
+    x_val=x_test,
+    y_val=y_test,
+    lr=1e-2,
+    epochs=10,
+    batch_size=256
+)
+
+# tests the model
+test_pred_l1_l2 = mlp_l1_l2.predict(x_test)
+test_acc_l1_l2 = np.mean(test_pred_l1_l2 == y_test)
+print(f"\nFinal test accuracy: {test_acc_l1_l2:.4f}")
