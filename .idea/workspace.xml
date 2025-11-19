@@ -5,26 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="53d2c8fc-09f6-4596-950a-66eac2662d99" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/experiment-2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/results/experiment-2-leaky-relu.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/results/experiment-2-tanh.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/results/experiment-3-l1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/results/experiment-3-l2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/results/experiment-4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/results/experiment-5.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiment-1.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiment-1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiment-2-leaky-relu.py" beforeDir="false" afterPath="$PROJECT_DIR$/convolutional-neural-network-experiment-6.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiment-2-tanh.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiment-3-l1.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiment-3-l1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiment-3-l2.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiment-3-l2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiment-4.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiment-4.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiment-5.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiment-5.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiment-6.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/MLP-output.png" beforeDir="false" afterPath="$PROJECT_DIR$/results/MLP-output.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/experiment-1-1.png" beforeDir="false" afterPath="$PROJECT_DIR$/results/experiment-1-1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/experiment-1-2.png" beforeDir="false" afterPath="$PROJECT_DIR$/results/experiment-1-2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/experiment-1-3.png" beforeDir="false" afterPath="$PROJECT_DIR$/results/experiment-1-3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiment-6-convolutional-neural-network.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiment-6-convolutional-neural-network.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,8 +43,10 @@
     "Python.experiment-2.executor": "Run",
     "Python.experiment-3-l1.executor": "Run",
     "Python.experiment-3-l2.executor": "Run",
+    "Python.experiment-3.executor": "Run",
     "Python.experiment-4.executor": "Run",
     "Python.experiment-5.executor": "Run",
+    "Python.experiment-6-convolutional-neural-network.executor": "Run",
     "Python.multilayer-perceptron.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
