@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="53d2c8fc-09f6-4596-950a-66eac2662d99" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiment-6-convolutional-neural-network.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiment-6-convolutional-neural-network.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiment-8.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiment-8.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,12 +47,15 @@
     "Python.experiment-4.executor": "Run",
     "Python.experiment-5.executor": "Run",
     "Python.experiment-6-convolutional-neural-network.executor": "Run",
+    "Python.experiment-7.executor": "Run",
+    "Python.experiment-8.executor": "Run",
     "Python.multilayer-perceptron.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/arctichawk1/Desktop/Projects/Private/Classification-of-Image-Data-with-MLP-and-CNN"
+    "last_opened_file_path": "/home/arctichawk1/Desktop/Projects/Private/Classification-of-Image-Data-with-MLP-and-CNN",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
   <component name="SharedIndexes">
