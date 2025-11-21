@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="53d2c8fc-09f6-4596-950a-66eac2662d99" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/hyperparameter-training.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiment-8.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiment-8.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/experiment-8.png" beforeDir="false" afterPath="$PROJECT_DIR$/results/experiment-8.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,33 +32,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.Unnamed.executor": "Run",
-    "Python.experiment-1-1.executor": "Run",
-    "Python.experiment-1-2.executor": "Run",
-    "Python.experiment-1.executor": "Run",
-    "Python.experiment-2-leaky-relu.executor": "Run",
-    "Python.experiment-2-tanh.executor": "Run",
-    "Python.experiment-2.executor": "Run",
-    "Python.experiment-3-l1.executor": "Run",
-    "Python.experiment-3-l2.executor": "Run",
-    "Python.experiment-3.executor": "Run",
-    "Python.experiment-4.executor": "Run",
-    "Python.experiment-5.executor": "Run",
-    "Python.experiment-6-convolutional-neural-network.executor": "Run",
-    "Python.experiment-7.executor": "Run",
-    "Python.experiment-8.executor": "Run",
-    "Python.multilayer-perceptron.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/arctichawk1/Desktop/Projects/Private/Classification-of-Image-Data-with-MLP-and-CNN",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-1-1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-1-2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-2-leaky-relu.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-2-tanh.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-3-l1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-3-l2.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-3.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-4.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-5.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-6-convolutional-neural-network.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-7.executor&quot;: &quot;Run&quot;,
+    &quot;Python.experiment-8.executor&quot;: &quot;Run&quot;,
+    &quot;Python.multilayer-perceptron.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/arctichawk1/Desktop/Projects/Private/Classification-of-Image-Data-with-MLP-and-CNN&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
